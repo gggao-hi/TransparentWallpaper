@@ -4,7 +4,6 @@ package com.fooww.transparentwallpaper;
 import android.hardware.Camera;
 import android.os.Environment;
 import android.service.wallpaper.WallpaperService;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import java.io.File;
@@ -41,8 +40,11 @@ public class TransparentWallPaperService extends WallpaperService {
             autoFous();
             camera.autoFocus(new Camera.AutoFocusCallback() {
                 @Override
-                public void onAutoFocus(boolean success, Camera camera) {
-                    camera.takePicture(null, null, CameraEngine.this);
+                public void onAutoFocus(boolean success, Camera c) {
+                    if (success) {
+                        if (camera != null)
+                            camera.takePicture(null, null, CameraEngine.this);
+                    }
                 }
             });
             camera.setDisplayOrientation(90);
@@ -78,7 +80,9 @@ public class TransparentWallPaperService extends WallpaperService {
                     camera.stopPreview();
                     camera.setPreviewCallback(null);
                     camera.release();
+                    camera = null;
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -124,4 +128,5 @@ public class TransparentWallPaperService extends WallpaperService {
             }
         }
     }
+
 }
